@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BALAN & TYNE AIRWAYS - 防挖角系統</title>
+    <!-- 引入題目資料 -->
+    <script src="data.js"></script>
+    <style>
+        :root {
+            --primary-bg: #0F172A; /* 午夜藍 */
+            --accent-gold: #D4AF37; /* 權威金 */
+            --text-light: #F8FAFC;
+            --error-red: #EF4444;
+            --success-green: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent-gold);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px dashed rgba(212, 175, 55, 0.5);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        h1, h2, h3 {
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .airline-logo {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .btn {
+            background-color: transparent;
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
+            padding: 12px 24px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .btn:hover, .btn:active {
+            background-color: var(--accent-gold);
+            color: var(--primary-bg);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        .option-card:hover, .option-card:active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-gold);
+        }
+
+        .option-img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+            object-fit: contain;
+        }
+
+        /* ⬇️ 新增：拼圖功能專用樣式 */
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 橫向拆成三塊 */
+            gap: 5px;
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 4 / 3; /* 標準照片 4:3 比例 */
+            margin: 25px auto;
+            border: 2px solid var(--accent-gold);
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .puzzle-piece {
+            background-size: 300% 100%; /* 自動放大三倍以供切片 */
+            background-repeat: no-repeat;
+            transition: all 0.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.4);
+            border-radius: 4px;
+        }
+
+        /* 透過背景定位，自動把一張圖切成三份 */
+        #puzzle-piece-1 { background-position: 0% center; }
+        #puzzle-piece-2 { background-position: 50% center; }
+        #puzzle-piece-3 { background-position: 100% center; }
+
+        /* 未解鎖時的陰暗鎖頭狀態 */
+        .puzzle-piece.locked {
+            background-image: none !important;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(212, 175, 55, 0.3);
+        }
+        .puzzle-piece.locked span { display: block; }
+        .puzzle-piece:not(.locked) span { display: none; } /* 解鎖後隱藏文字 */
+
+        /* 狀態切換 */
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.5s ease-in; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake { animation: shake 0.4s ease-in-out; border-color: var(--error-red) !important; background: rgba(239, 68, 68, 0.2) !important; }
+        .correct-flash { border-color: var(--success-green) !important; background: rgba(16, 185, 129, 0.2) !important; }
+
+        .progress {
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 15px;
+        }
+
+        /* 懲罰視窗 */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9); z-index: 200; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1E293B; border: 3px solid var(--error-red); padding: 30px; border-radius: 15px;
+            width: 85%; max-width: 450px; text-align: center; box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); position: relative;
+        }
+        .punishment-title { color: var(--error-red); font-size: 1.5em; margin-top: 0; letter-spacing: 2px; }
+        .punishment-text {
+            font-size: 1.2em; color: #FFF; margin: 25px 0; line-height: 1.6;
+            background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 8px; border-left: 5px solid var(--error-red); text-align: left;
+        }
+
+        #alert-box {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 5px; color: white; font-weight: bold; display: none; z-index: 300;
+        }
+        .date-question-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 6px;
+            color: #FFF;
+            padding: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            outline: none;
+            text-align: center;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        .date-question-input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) sepia(1) saturate(5) hue-rotate(15deg);
+            cursor: pointer;
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. 歡迎畫面 -->
+        <div id="welcome-screen" class="screen active">
+            <div class="airline-logo" id="logo-text">BALAN & TYNE AIRWAYS</div>
+            <h2 id="welcome-title">Title</h2>
+            <p id="welcome-text" style="line-height: 1.8;">Text</p>
+            <button class="btn" onclick="startGame()">接受考驗 (Start)</button>
+        </div>
+
+        <!-- 2. 遊戲畫面 -->
+        <div id="game-screen" class="screen">
+            <h2 id="stage-title">Stage Title</h2>
+            <div class="progress" id="progress-text">Q: 1 / 3</div>
+            <h3 id="question-text" style="color: white;">Question?</h3>
+            <div class="options-grid" id="options-container">
+                <!-- 選項會由 JS 動態生成 -->
+            </div>
+        </div>
+
+        <!-- ⬇️ 3. 新增：階段結束的拼圖解鎖畫面 -->
+        <div id="puzzle-screen" class="screen">
+            <div class="airline-logo">BALAN & TYNE AIRWAYS</div>
+            <h2 style="color: var(--accent-gold);">🧩 進度：解密拼圖</h2>
+            <p id="puzzle-tip" style="line-height: 1.6; color: rgba(255,255,255,0.85);"></p>
+            
+            <!-- 拼圖區域 -->
+            <div class="puzzle-container">
+                <div id="puzzle-piece-1" class="puzzle-piece locked"><span>🔒<br>過去航線</span></div>
+                <div id="puzzle-piece-2" class="puzzle-piece locked"><span>🔒<br>目前狀態</span></div>
+                <div id="puzzle-piece-3" class="puzzle-piece locked"><span>🔒<br>未來航向</span></div>
+            </div>
+            
+            <button class="btn" id="puzzle-next-btn" onclick="proceedAfterPuzzle()">繼續下一關</button>
+        </div>
+
+        <!-- 4. 通關畫面 -->
+        <div id="finish-screen" class="screen">
+            <div class="airline-logo">BALAN & TYNE AIRWAYS</div>
+            <h2>✈️ 考驗通過，准許放行</h2>
+            <p>可惡，居然被妳全部答對了！<br><br>BALAN & TYNE AIRWAYS 正式將 Alex 移交給 ALVY AIRWAYS。<br>祝你們這趟名為「婚姻」的航班，永遠不誤點，幸福降落！</p>
+            <h1 style="color: var(--text-light); margin-top:30px;">Alex & Ivy<br><span style="color:var(--accent-gold); font-size:0.6em;">Happy Wedding!</span></h1>
+        </div>
+    </div>
+
+    <!-- 懲罰彈出視窗 -->
+    <div id="punishment-modal" class="modal">
+        <div class="modal-content">
+            <div style="position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border: 1px dashed rgba(239, 68, 68, 0.4); border-radius: 10px; pointer-events: none;"></div>
+            <h2 class="punishment-title">⚠️ 航空違規處置罰單 ⚠️</h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.9em;">旅客 Ivy 您好，由於考驗未通過，系統已自動隨機抽選一項違規處置。請立刻執行以下懲罰：</p>
+            <div id="punishment-display" class="punishment-text"></div>
+            <button class="btn" style="border-color: var(--error-red); color: white; background: var(--error-red);" onclick="closePunishmentModal()">我已完成懲罰 (重新挑戰)</button>
+        </div>
+    </div>
+
+    <div id="alert-box"></div>
+
+    <script>
+        let currentStageIndex = 0;
+        let currentQuestionIndex = 0;
+
+        // 初始化歡迎畫面
+        document.getElementById('logo-text').innerText = gameData.airlineName;
+        document.getElementById('welcome-title').innerText = gameData.welcomeTitle;
+        document.getElementById('welcome-text').innerHTML = gameData.welcomeText;
+
+        function startGame() {
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+    const stage = gameData.stages[currentStageIndex];
+    const question = stage.questions[currentQuestionIndex];
+    
+    document.getElementById('stage-title').innerText = stage.stageName;
+    document.getElementById('progress-text').innerText = `目前進度：第 ${currentQuestionIndex + 1} 題 / 共 ${stage.questions.length} 題`;
+    document.getElementById('question-text').innerText = question.question;
+
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+
+    // 💡 判斷：如果是特殊日期輸入題
+    if (question.type === 'date') {
+        optionsContainer.innerHTML = `
+            <input type="date" id="question-date-input" class="date-question-input">
+            <button class="btn" style="margin-top:0;" onclick="checkDateAnswer('${question.correctAnswer}')">提交驗證 (Submit)</button>
+        `;
+    } else {
+        // 原本的普通選單渲染邏輯
+        question.options.forEach((opt) => {
+            const div = document.createElement('div');
+            div.className = 'option-card';
+            
+            if (opt.type === 'text') {
+                div.innerHTML = `<span>${opt.content}</span>`;
+            } else if (opt.type === 'image') {
+                div.innerHTML = `<img src="${opt.content}" class="option-img" alt="選項圖片">`;
+            }
+
+            div.onclick = () => checkAnswer(opt.isCorrect, div);
+            optionsContainer.appendChild(div);
+        });
+    }
+}
+
+        function checkAnswer(isCorrect, element) {
+            const allCards = document.querySelectorAll('.option-card');
+            allCards.forEach(card => card.style.pointerEvents = 'none');
+
+            if (isCorrect) {
+                element.classList.add('correct-flash');
+                showAlert('✅ 驗證通過！', 'var(--success-green)');
+                
+                setTimeout(() => {
+                    nextQuestion();
+                }, 1500);
+            } else {
+                element.classList.add('shake');
+                showAlert('❌ 驗證失敗！', 'var(--error-red)');
+                
+                setTimeout(() => {
+                    element.classList.remove('shake');
+                    triggerPunishment();
+                }, 1000);
+            }
+        }
+
+        function triggerPunishment() {
+            const pList = gameData.punishments;
+            const randomIndex = Math.floor(Math.random() * pList.length);
+            document.getElementById('punishment-display').innerText = pList[randomIndex];
+            document.getElementById('punishment-modal').style.display = 'flex';
+        }
+
+        function closePunishmentModal() {
+            document.getElementById('punishment-modal').style.display = 'none';
+            const allCards = document.querySelectorAll('.option-card');
+            allCards.forEach(card => card.style.pointerEvents = 'auto');
+        }
+
+        // ⬇️ 修改：當題組完成時，切換到拼圖中轉頁面
+        function nextQuestion() {
+            const stage = gameData.stages[currentStageIndex];
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex >= stage.questions.length) {
+                // 本階段答題完畢，觸發拼圖畫面
+                showPuzzleScreen();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        // ⬇️ 新增：顯示拼圖解鎖邏輯
+        function showPuzzleScreen() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('puzzle-screen').classList.add('active');
+
+            // 根據目前過關的 index (0=過去, 1=現在, 2=未來) 解鎖對應拼圖
+            const pieceNum = currentStageIndex + 1;
+            const targetPiece = document.getElementById(`puzzle-piece-${pieceNum}`);
+            
+            if (targetPiece) {
+                targetPiece.style.backgroundImage = `url('${gameData.secretImage}')`;
+                targetPiece.classList.remove('locked');
+            }
+
+            // 動態修改按鈕文字與提示文案
+            const nextBtn = document.getElementById('puzzle-next-btn');
+            const tipText = document.getElementById('puzzle-tip');
+            
+            if (currentStageIndex === gameData.stages.length - 1) {
+                tipText.innerHTML = "✨ 恭喜！三大階段考驗全部通過！<br>新郎的祕密檔案照片已成功完整拼出！";
+                nextBtn.innerText = "解鎖完成，查看最終結果";
+            } else {
+                const currentStageName = gameData.stages[currentStageIndex].stageName.split('：')[1] || "此階段";
+                tipText.innerHTML = `成功通過【${currentStageName}】挑戰！<br>獲得新郎機密照片碎片（第 ${pieceNum}/3 片）。`;
+                nextBtn.innerText = "進入下一階段";
+            }
+        }
+
+        // ⬇️ 新增：點擊拼圖頁按鈕後的跳轉邏輯
+        function proceedAfterPuzzle() {
+            document.getElementById('puzzle-screen').classList.remove('active');
+            
+            currentStageIndex++;
+            currentQuestionIndex = 0;
+
+            if (currentStageIndex >= gameData.stages.length) {
+                // 全部關卡+拼圖完成，去大結局
+                document.getElementById('finish-screen').classList.add('active');
+            } else {
+                // 去下一關題目
+                document.getElementById('game-screen').classList.add('active');
+                loadQuestion();
+            }
+        }
+
+        function showAlert(msg, color) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.innerText = msg;
+            alertBox.style.backgroundColor = color;
+            alertBox.style.display = 'block';
+            setTimeout(() => { alertBox.style.display = 'none'; }, 2000);
+        }
+        function checkDateAnswer() {
+            const userInput = document.getElementById('question-date-input').value;
+            const inputEl = document.getElementById('question-date-input');
+            
+            if (!userInput) {
+                showAlert('⚠️ 請選擇日期！', 'var(--error-red)');
+                return;
+            }
+            // 自動抓取當前日期的正確答案陣列
+            const currentQuestion = gameData.stages[currentStageIndex].questions[currentQuestionIndex];
+            const allowedDates = currentQuestion.correctAnswers; 
+            // 💡 智慧判斷：檢查新郎輸入的日期，有沒有在允許的答案清單內
+            if (allowedDates.includes(userInput)) {
+                inputEl.classList.add('correct-flash');
+                showAlert('✅ 密碼正確！安全鎖已解除', 'var(--success-green)');
+                setTimeout(() => {
+                    nextQuestion();
+                }, 1500);
+            } else {
+                inputEl.classList.add('shake');
+                showAlert('❌ 警告：密碼錯誤！引發安全警報！', 'var(--error-red)');
+                setTimeout(() => {
+                    inputEl.classList.remove('shake');
+                    triggerPunishment();
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
