@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BALAN & TYNE AIRWAYS - 防挖角系統</title>
+    <title>BALAN & TYNG AIRWAYS - 防挖角系統</title>
     <!-- 引入題目資料 -->
     <script src="data.js"></script>
     <style>
@@ -233,7 +233,7 @@
     <div class="container">
         <!-- 1. 歡迎畫面 -->
         <div id="welcome-screen" class="screen active">
-            <div class="airline-logo" id="logo-text">BALAN & TYNE AIRWAYS</div>
+            <div class="airline-logo" id="logo-text">BALAN & TYNG AIRWAYS</div>
             <h2 id="welcome-title">Title</h2>
             <p id="welcome-text" style="line-height: 1.8;">Text</p>
             <button class="btn" onclick="startGame()">接受考驗 (Start)</button>
@@ -251,7 +251,7 @@
 
         <!-- ⬇️ 3. 新增：階段結束的拼圖解鎖畫面 -->
         <div id="puzzle-screen" class="screen">
-            <div class="airline-logo">BALAN & TYNE AIRWAYS</div>
+            <div class="airline-logo">BALAN & TYNG AIRWAYS</div>
             <h2 style="color: var(--accent-gold);">🧩 進度：解密拼圖</h2>
             <p id="puzzle-tip" style="line-height: 1.6; color: rgba(255,255,255,0.85);"></p>
             
@@ -267,9 +267,9 @@
 
         <!-- 4. 通關畫面 -->
         <div id="finish-screen" class="screen">
-            <div class="airline-logo">BALAN & TYNE AIRWAYS</div>
+            <div class="airline-logo">BALAN & TYNG AIRWAYS</div>
             <h2>✈️ 考驗通過，准許放行</h2>
-            <p>可惡，居然被妳全部答對了！<br><br>BALAN & TYNE AIRWAYS 正式將 Alex 移交給 ALVY AIRWAYS。<br>祝你們這趟名為「婚姻」的航班，永遠不誤點，幸福降落！</p>
+            <p>可惡，居然被妳全部答對了！<br><br>BALAN & TYNG AIRWAYS 正式將 Alex 移交給 ALVY AIRWAYS。<br>祝你們這趟名為「婚姻」的航班，永遠不誤點，幸福降落！</p>
             <h1 style="color: var(--text-light); margin-top:30px;">Alex & Ivy<br><span style="color:var(--accent-gold); font-size:0.6em;">Happy Wedding!</span></h1>
         </div>
     </div>
@@ -303,38 +303,38 @@
         }
 
         function loadQuestion() {
-    const stage = gameData.stages[currentStageIndex];
-    const question = stage.questions[currentQuestionIndex];
-    
-    document.getElementById('stage-title').innerText = stage.stageName;
-    document.getElementById('progress-text').innerText = `目前進度：第 ${currentQuestionIndex + 1} 題 / 共 ${stage.questions.length} 題`;
-    document.getElementById('question-text').innerText = question.question;
-
-    const optionsContainer = document.getElementById('options-container');
-    optionsContainer.innerHTML = '';
-
-    // 💡 判斷：如果是特殊日期輸入題
-    if (question.type === 'date') {
-        optionsContainer.innerHTML = `
-            <input type="date" id="question-date-input" class="date-question-input">
-            <button class="btn" style="margin-top:0;" onclick="checkDateAnswer('${question.correctAnswer}')">提交驗證 (Submit)</button>
-        `;
-    } else {
-        // 原本的普通選單渲染邏輯
-        question.options.forEach((opt) => {
-            const div = document.createElement('div');
-            div.className = 'option-card';
+            const stage = gameData.stages[currentStageIndex];
+            const question = stage.questions[currentQuestionIndex];
             
-            if (opt.type === 'text') {
-                div.innerHTML = `<span>${opt.content}</span>`;
-            } else if (opt.type === 'image') {
-                div.innerHTML = `<img src="${opt.content}" class="option-img" alt="選項圖片">`;
-            }
+            document.getElementById('stage-title').innerText = stage.stageName;
+            document.getElementById('progress-text').innerText = `目前進度：第 ${currentQuestionIndex + 1} 題 / 共 ${stage.questions.length} 題`;
+            document.getElementById('question-text').innerText = question.question;
 
-            div.onclick = () => checkAnswer(opt.isCorrect, div);
-            optionsContainer.appendChild(div);
-        });
-    }
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            // 💡 判斷：如果是特殊日期輸入題
+            if (question.type === 'date') {
+                optionsContainer.innerHTML = `
+                    <input type="date" id="question-date-input" class="date-question-input">
+                    <button class="btn" style="margin-top:0;" onclick="checkDateAnswer('${question.correctAnswer}')">提交驗證 (Submit)</button>
+                `;
+            } else {
+                // 原本的普通選單渲染邏輯
+                question.options.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = 'option-card';
+                    
+                    if (opt.type === 'text') {
+                        div.innerHTML = `<span>${opt.content}</span>`;
+                    } else if (opt.type === 'image') {
+                        div.innerHTML = `<img src="${opt.content}" class="option-img" alt="選項圖片">`;
+                    }
+
+                    div.onclick = () => checkAnswer(opt.isCorrect, div);
+                    optionsContainer.appendChild(div);
+                });
+            }
 }
 
         function checkAnswer(isCorrect, element) {

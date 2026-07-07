@@ -10,9 +10,9 @@ const gameData = {
         "【愛情靈藥】百年好合五號",
         "【愛情靈藥】白頭偕老六號",
     ],
-    airlineName: "BALAN & TYNE AIRWAYS",
+    airlineName: "BALAN & TYNG AIRWAYS",
     welcomeTitle: "⚠️ 警告：非法挖角請求",
-    welcomeText: "Ivy 您好，您正試圖將我們的金牌飛行員 Alex 挖角至 ALVY AIRWAYS。<br>本航司 (BALAN & TYNE AIRWAYS) 絕不輕易放人！<br>除非您能通過我們的「過去、現在、未來」三階段最高級別考驗。準備好了嗎？",
+    welcomeText: "Ivy 您好，您正試圖將我們的金牌飛行員 Alex 挖角至 ALVY AIRWAYS。<br>本航司 (BALAN & TYNG AIRWAYS) 絕不輕易放人！<br>除非您能通過我們的「過去、現在、未來」三階段最高級別考驗。準備好了嗎？",
     
     stages: [
         {
