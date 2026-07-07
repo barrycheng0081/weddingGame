@@ -104,7 +104,16 @@ const gameData = {
                     question: "身為一個幸福企業，對於員工每年的生日都是十分重視的，請問 Alex 的生日為?",
                     type: "date",
                     correctAnswers: ["1991-09-16"]
-                }
+                },
+                {
+                    question: "請問 Alex 下一個想去的旅遊地點是?",
+                    options: [
+                        { type: "text", content: "日本吉原", isCorrect: false },
+                        { type: "text", content: "荷蘭紅燈區", isCorrect: false },
+                        { type: "text", content: "美國拉斯維加斯", isCorrect: false },
+                        { type: "text", content: "桃園豆干厝", isCorrect: true }
+                    ]
+                },
             ]
         }
     ]
