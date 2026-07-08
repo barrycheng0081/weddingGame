@@ -96,8 +96,8 @@ const gameData = {
                     options: [
                         { type: "text", content: "3 天", isCorrect: false },
                         { type: "text", content: "4 天", isCorrect: false },
-                        { type: "text", content: "5 天", isCorrect: false },
-                        { type: "text", content: "6 天", isCorrect: true }
+                        { type: "text", content: "5 天", isCorrect: true },
+                        { type: "text", content: "6 天", isCorrect: false }
                     ]
                 },
                 {
