@@ -225,7 +225,21 @@
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8) sepia(1) saturate(5) hue-rotate(15deg);
             cursor: pointer;
-}
+        }
+        /* ⬇️ 新增：找人題目的照片樣式 */
+        .find-person-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border: 2px solid var(--accent-gold);
+            border-radius: 8px;
+            cursor: zoom-in; /* 讓滑鼠移上去顯示放大鏡 */
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        .find-person-img:hover {
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
@@ -284,7 +298,9 @@
             <button class="btn" style="border-color: var(--error-red); color: white; background: var(--error-red);" onclick="closePunishmentModal()">我已完成懲罰 (重新挑戰)</button>
         </div>
     </div>
-
+    <div id="image-zoom-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; cursor: zoom-out;" onclick="closeZoomImage()">
+        <img id="zoomed-image" style="max-width: 95%; max-height: 95%; object-fit: contain; border: 2px solid var(--accent-gold); border-radius: 8px;">
+    </div>
     <div id="alert-box"></div>
 
     <script>
@@ -318,6 +334,13 @@
                 optionsContainer.innerHTML = `
                     <input type="date" id="question-date-input" class="date-question-input">
                     <button class="btn" style="margin-top:0;" onclick="checkDateAnswer('${question.correctAnswer}')">提交驗證 (Submit)</button>
+                `;
+            } else if (question.type === 'find-person') {
+                optionsContainer.innerHTML = `
+                    <img src="${question.image}" class="find-person-img" onclick="zoomImage('${question.image}')">
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.85em; margin-top: -5px; margin-bottom: 20px;">🔍 提示：點擊上方照片可「雙擊/單擊」放大查看細節</p>
+                    
+                    <button class="btn" style="background: var(--accent-gold); color: var(--primary-bg); margin-top: 0;" onclick="nextQuestion()">我找到了！解鎖下一航線 (Next)</button>
                 `;
             } else {
                 // 原本的普通選單渲染邏輯
@@ -462,6 +485,22 @@
                     inputEl.classList.remove('shake');
                     triggerPunishment();
                 }, 1000);
+            }
+        }
+        // ⬇️ 新增：放大與縮小照片的控制控制
+        function zoomImage(imgSrc) {
+            const zoomModal = document.getElementById('image-zoom-modal');
+            const zoomedImg = document.getElementById('zoomed-image');
+            if (zoomModal && zoomedImg) {
+                zoomedImg.src = imgSrc;
+                zoomModal.style.display = 'flex';
+            }
+        }
+        
+        function closeZoomImage() {
+            const zoomModal = document.getElementById('image-zoom-modal');
+            if (zoomModal) {
+                zoomModal.style.display = 'none';
             }
         }
     </script>
