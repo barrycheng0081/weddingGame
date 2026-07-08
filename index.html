@@ -279,7 +279,7 @@
         <div class="modal-content">
             <div style="position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border: 1px dashed rgba(239, 68, 68, 0.4); border-radius: 10px; pointer-events: none;"></div>
             <h2 class="punishment-title">⚠️ 航空違規處置罰單 ⚠️</h2>
-            <p style="color: rgba(255,255,255,0.7); font-size: 0.9em;">旅客 Ivy 您好，由於考驗未通過，系統已自動隨機抽選一項違規處置。請立刻執行以下懲罰：</p>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.9em;">Ivy 您好，由於考驗未通過，系統已自動隨機抽選一項違規處置。請立刻執行以下懲罰：</p>
             <div id="punishment-display" class="punishment-text"></div>
             <button class="btn" style="border-color: var(--error-red); color: white; background: var(--error-red);" onclick="closePunishmentModal()">我已完成懲罰 (重新挑戰)</button>
         </div>
@@ -404,11 +404,11 @@
             const tipText = document.getElementById('puzzle-tip');
             
             if (currentStageIndex === gameData.stages.length - 1) {
-                tipText.innerHTML = "✨ 恭喜！三大階段考驗全部通過！<br>新郎的祕密檔案照片已成功完整拼出！";
+                tipText.innerHTML = "✨ 恭喜！三大階段考驗全部通過！<br>Alex 的祕密檔案照片已成功完整拼出！";
                 nextBtn.innerText = "解鎖完成，查看最終結果";
             } else {
                 const currentStageName = gameData.stages[currentStageIndex].stageName.split('：')[1] || "此階段";
-                tipText.innerHTML = `成功通過【${currentStageName}】挑戰！<br>獲得新郎機密照片碎片（第 ${pieceNum}/3 片）。`;
+                tipText.innerHTML = `成功通過【${currentStageName}】挑戰！<br>獲得 Alex 機密照片碎片（第 ${pieceNum}/3 片）。`;
                 nextBtn.innerText = "進入下一階段";
             }
         }
