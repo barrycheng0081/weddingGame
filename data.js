@@ -67,7 +67,7 @@ const gameData = {
                     ]
                 },
                 {
-                    question: "身為要挖腳 Alex 的人，想必對於 Alex 目前所駕駛的機型想必十分理解吧，請問目前 Alex 駕駛的機型為?",
+                    question: "身為要挖角 Alex 的人，想必對於 Alex 目前所駕駛的機型想必十分理解吧，請問目前 Alex 駕駛的機型為?",
                     options: [
                         { type: "text", content: "A320", isCorrect: false },
                         { type: "text", content: "A350", isCorrect: false },
