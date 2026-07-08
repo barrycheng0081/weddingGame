@@ -58,16 +58,16 @@ const gameData = {
             stageName: "機艙現況 (現在)",
             questions: [
                 {
-                    question: "健康是身為飛行員最重要的事情，Alex 於最新的體檢報告中，請問哪個數值為紅字?",
+                    question: "眼睛人稱靈魂之窗，對於飛行員更是十分重要的，請問以下哪個眼睛是 Alex 的靈魂之窗呢?",
                     options: [
-                        { type: "text", content: "頭皮毛髮覆蓋率", isCorrect: false },
-                        { type: "text", content: "肌酸酐", isCorrect: false },
-                        { type: "text", content: "總膽固醇", isCorrect: true },
-                        { type: "text", content: "尿顏色", isCorrect: false }
+                         { type: "image", content: "images/eye_liwei.jpg", isCorrect: true },
+                        { type: "image", content: "images/eye_barry.jpg", isCorrect: false },
+                        { type: "image", content: "images/eye_tyng.jpg", isCorrect: false },
+                        { type: "image", content: "images/eye_alan.jpg", isCorrect: false }
                     ]
                 },
                 {
-                    question: "身為要挖腳 Alex 的人，想必對於 Alex 目前所駕駛的機型十分理解吧，請問目前 Alex 駕駛的機型為?",
+                    question: "身為要挖腳 Alex 的人，想必對於 Alex 目前所駕駛的機型想必十分理解吧，請問目前 Alex 駕駛的機型為?",
                     options: [
                         { type: "text", content: "A320", isCorrect: false },
                         { type: "text", content: "A350", isCorrect: false },
@@ -92,28 +92,24 @@ const gameData = {
             stageName: "未來航向 (未來)",
             questions: [
                 {
-                    question: "請問 Alex 下一個航班的目的地機場代碼是?",
+                    question: "掌握旗下飛行員行蹤對公司來說是十分重要的，Alex 近期較常飛美西，請問，Alex 飛美西航線時，會需要橫跨幾天呢?",
                     options: [
-                        { type: "text", content: "SFO", isCorrect: false },
-                        { type: "text", content: "HND", isCorrect: false },
-                        { type: "text", content: "CDG", isCorrect: false },
-                        { type: "text", content: "BKK", isCorrect: true }
+                        { type: "text", content: "3 天", isCorrect: false },
+                        { type: "text", content: "4 天", isCorrect: false },
+                        { type: "text", content: "5 天", isCorrect: false },
+                        { type: "text", content: "6 天", isCorrect: true }
                     ]
+                },
+                {
+                    question: "在未來，貴司一定對自家飛行員十分愛戴，並且能在茫茫人海中找到他，因此請在這張照片中找出 Alex！點擊照片可以放大，找到後請點下方按鈕過關：",
+                    type: "find-person",
+                    image: "images/search_photo.jpg" // ⬅️ 請改成你要讓新娘找人的照片路徑
                 },
                 {
                     question: "身為一個幸福企業，對於員工每年的生日都是十分重視的，請問 Alex 的生日為?",
                     type: "date",
                     correctAnswers: ["1991-09-16"]
-                },
-                {
-                    question: "請問 Alex 下一個想去的旅遊地點是?",
-                    options: [
-                        { type: "text", content: "日本吉原", isCorrect: false },
-                        { type: "text", content: "荷蘭紅燈區", isCorrect: false },
-                        { type: "text", content: "美國拉斯維加斯", isCorrect: false },
-                        { type: "text", content: "桃園豆干厝", isCorrect: true }
-                    ]
-                },
+                }
             ]
         }
     ]
