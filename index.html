@@ -122,17 +122,21 @@
 
         /* ⬇️ 新增：拼圖功能專用樣式 */
         .puzzle-container {
+            width: 100%;
+            max-width: 360px;
+            margin: 25px auto;
+            border: 2px solid var(--accent-gold);
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .puzzle-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* 橫向拆成三塊 */
             gap: 5px;
             width: 100%;
-            max-width: 360px;
             aspect-ratio: 4 / 3; /* 標準照片 4:3 比例 */
-            margin: 25px auto;
-            border: 2px solid var(--accent-gold);
-            padding: 5px;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
         }
 
         .puzzle-piece {
@@ -272,9 +276,11 @@
             
             <!-- 拼圖區域 -->
             <div class="puzzle-container">
-                <div id="puzzle-piece-1" class="puzzle-piece locked"><span>🔒<br>過去航線</span></div>
-                <div id="puzzle-piece-2" class="puzzle-piece locked"><span>🔒<br>目前狀態</span></div>
-                <div id="puzzle-piece-3" class="puzzle-piece locked"><span>🔒<br>未來航向</span></div>
+                <div class="puzzle-grid">
+                    <div id="puzzle-piece-1" class="puzzle-piece locked"><span>🔒<br>過去航線</span></div>
+                    <div id="puzzle-piece-2" class="puzzle-piece locked"><span>🔒<br>目前狀態</span></div>
+                    <div id="puzzle-piece-3" class="puzzle-piece locked"><span>🔒<br>未來航向</span></div>
+                </div>
             </div>
             
             <button class="btn" id="puzzle-next-btn" onclick="proceedAfterPuzzle()">繼續下一關</button>
